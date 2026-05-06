@@ -95,29 +95,20 @@ body{
   margin-top:15px;
 }
 
-/* 🟣 الصورة الثالثة (Fade in تحت الكلام) */
 .small-image{
   width:160px;
   border-radius:15px;
   margin-top:15px;
-
   opacity:0;
   animation: fadeInSlow 2.5s ease forwards;
 }
 
-/* fade animation */
 @keyframes fadeInSlow{
-  from{
-    opacity:0;
-    transform: translateY(10px);
-  }
-  to{
-    opacity:1;
-    transform: translateY(0);
-  }
+  from{opacity:0; transform: translateY(10px);}
+  to{opacity:1; transform: translateY(0);}
 }
 
-/* -------- POPUP IMAGE -------- */
+/* -------- POPUP -------- */
 #imgOverlay{
   display:none;
   position:fixed;
@@ -155,6 +146,19 @@ body{
   z-index:1000;
 }
 
+/* -------- CELEBRATION HEARTS -------- */
+.float-heart{
+  position:fixed;
+  font-size:22px;
+  animation: floatUp 3s linear forwards;
+  z-index:9999;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0); opacity:1;}
+  to{transform:translateY(-800px); opacity:0;}
+}
+
 </style>
 </head>
 
@@ -178,21 +182,20 @@ body{
 <div id="messageBox">
 
   <div id="text">
-🩷🩷 GREAT JOB MY SWEETIE BOY
+ GREAT JOB MY SWEETIE BOY😽💕
 I LOVE YOU 25,0000000000000♾️!
 
-I'm proud of you, even for the small things
+I'm proud of you even for the small things
 
-You mean more to me than anything.
+You mean more to me than anything
   </div>
 
   <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
-
   <img src="https://i.imgur.com/cqiXrWK.jpg" class="small-image">
 
 </div>
 
-<!-- 🖼️ POPUP IMAGE -->
+<!-- 🖼️ POPUP -->
 <div id="imgOverlay">
   <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
 </div>
@@ -214,8 +217,11 @@ document.getElementById("checkBtn").onclick = function(){
 let val = Number(document.getElementById("answer").value);
 
 if(val === questions[step].a){
+
   step++;
   document.getElementById("msg").innerText = "✔️ correct";
+
+  burstHearts(); // 🎉 احتفال
 
   if(step < questions.length){
     document.getElementById("question").innerText = questions[step].q;
@@ -230,6 +236,21 @@ if(val === questions[step].a){
 }
 
 };
+
+/* 💥 احتفال القلوب */
+function burstHearts(){
+  for(let i=0;i<15;i++){
+    let h = document.createElement("div");
+    h.className = "float-heart";
+    h.innerHTML = ["💗","🩷","🩵"][Math.floor(Math.random()*3)];
+    h.style.left = Math.random()*100 + "vw";
+    h.style.top = "50%";
+
+    document.body.appendChild(h);
+
+    setTimeout(()=>h.remove(),3000);
+  }
+}
 
 /* -------- HEART GAME -------- */
 let score=0;
