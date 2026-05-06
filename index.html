@@ -11,13 +11,10 @@ body{
   font-family:'Quicksand',sans-serif;
   background:#ffe6f2;
   overflow-y:auto;
-  overflow-x:hidden;
 }
 
 /* -------- MATH GAME -------- */
-#mathBox{
-  margin-top:40px;
-}
+#mathBox{ margin-top:40px; }
 
 #question{
   font-size:28px;
@@ -40,13 +37,6 @@ body{
   border-radius:15px;
   background:#ff4da6;
   color:white;
-  cursor:pointer;
-}
-
-#msg{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:600;
 }
 
 /* -------- HEART GAME -------- */
@@ -54,19 +44,16 @@ body{
   font-size:32px;
   font-weight:700;
   color:#ff1493;
-  margin-top:20px;
   display:none;
 }
 
 #score{
-  font-size:18px;
   display:none;
 }
 
 .heart{
   font-size:42px;
   cursor:pointer;
-  display:inline-block;
   margin:10px;
 }
 
@@ -81,6 +68,7 @@ body{
   border-radius:20px;
 }
 
+/* الرسالة */
 #text{
   font-size:24px;
   color:#ff1493;
@@ -88,24 +76,25 @@ body{
   white-space:pre-line;
 }
 
-/* -------- IMAGES -------- */
+/* الصور */
 .win-image{
   width:220px;
   border-radius:15px;
   margin-top:15px;
 }
 
+/* ⭐ الصورة الثالثة (تحت الكلام + سكروول طبيعي) */
 .small-image{
   width:160px;
   border-radius:15px;
   margin-top:15px;
   opacity:0;
-  animation: fadeInSlow 2.5s ease forwards;
+  animation: fadeIn 2s forwards;
 }
 
-@keyframes fadeInSlow{
-  from{opacity:0; transform: translateY(10px);}
-  to{opacity:1; transform: translateY(0);}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
 }
 
 /* -------- POPUP -------- */
@@ -119,21 +108,14 @@ body{
   background:rgba(255,230,242,0.92);
   justify-content:center;
   align-items:center;
-  z-index:999;
 }
 
 .popup-img{
   width:70%;
-  max-width:300px;
   border-radius:20px;
 }
 
-/* -------- FLOATING TEXT -------- */
-@keyframes moveText {
-  0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(-20px); opacity: 1; }
-}
-
+/* -------- FLOAT TEXT -------- */
 .floating-text{
   position:fixed;
   bottom:20%;
@@ -142,21 +124,24 @@ body{
   font-size:26px;
   font-weight:700;
   color:#ff1493;
-  animation: moveText 1.5s infinite alternate;
-  z-index:1000;
+  animation: move 1.5s infinite alternate;
 }
 
-/* -------- CELEBRATION HEARTS -------- */
+@keyframes move{
+  0%{transform:translateY(20px); opacity:0;}
+  100%{transform:translateY(-20px); opacity:1;}
+}
+
+/* 💗 قلوب تتطاير */
 .float-heart{
   position:fixed;
   font-size:22px;
-  animation: floatUp 3s linear forwards;
-  z-index:9999;
+  animation: fly 2s linear forwards;
 }
 
-@keyframes floatUp{
+@keyframes fly{
   from{transform:translateY(0); opacity:1;}
-  to{transform:translateY(-800px); opacity:0;}
+  to{transform:translateY(-700px); opacity:0;}
 }
 
 </style>
@@ -164,13 +149,12 @@ body{
 
 <body>
 
-<!-- 🧠 MATH GAME -->
+<!-- 🧠 GAME -->
 <div id="mathBox">
   <div id="question"></div>
-  <input id="answer" type="number" placeholder="answer">
+  <input id="answer" type="number">
   <br>
   <button id="checkBtn">Check</button>
-  <div id="msg"></div>
 </div>
 
 <!-- ❤️ HEART GAME -->
@@ -182,77 +166,72 @@ body{
 <div id="messageBox">
 
   <div id="text">
- GREAT JOB MY SWEETIE BOY😽💕
+🩷🩷 GREAT JOB MY SWEETIE BOY
 I LOVE YOU 25,0000000000000♾️!
 
-I'm proud of you even for the small things
+I'm proud of you, even for the small things
 
-You mean more to me than anything
+You mean more to me than anything.
   </div>
 
   <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
+
+  <!-- الصورة الثالثة (تحت الكلام) -->
   <img src="https://i.imgur.com/cqiXrWK.jpg" class="small-image">
 
 </div>
 
-<!-- 🖼️ POPUP -->
+<!-- POPUP -->
 <div id="imgOverlay">
   <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
 </div>
 
 <script>
 
-/* -------- MATH GAME -------- */
-let step = 0;
-
-let questions = [
-  {q:"2 + 5 = ?", a:7},
-  {q:"7 + 10 - 3 + 16 - 5 = ?", a:25}
+/* 🧠 math */
+let step=0;
+let q=[
+ {q:"2 + 5 = ?",a:7},
+ {q:"7 + 10 - 3 + 16 - 5 = ?",a:25}
 ];
 
-document.getElementById("question").innerText = questions[0].q;
+document.getElementById("question").innerText=q[0].q;
 
-document.getElementById("checkBtn").onclick = function(){
+document.getElementById("checkBtn").onclick=function(){
 
-let val = Number(document.getElementById("answer").value);
+let val=Number(document.getElementById("answer").value);
 
-if(val === questions[step].a){
+if(val===q[step].a){
 
   step++;
-  document.getElementById("msg").innerText = "✔️ correct";
 
-  burstHearts(); // 🎉 احتفال
+  burst(); // 🎉 احتفال عند كل صح
 
-  if(step < questions.length){
-    document.getElementById("question").innerText = questions[step].q;
-    document.getElementById("answer").value = "";
-  } else {
+  if(step<q.length){
+    document.getElementById("question").innerText=q[step].q;
+    document.getElementById("answer").value="";
+  }else{
     startHearts();
     document.getElementById("mathBox").style.display="none";
   }
 
-} else {
-  document.getElementById("msg").innerText = "❌ try again";
 }
 
 };
 
-/* 💥 احتفال القلوب */
-function burstHearts(){
-  for(let i=0;i<15;i++){
-    let h = document.createElement("div");
-    h.className = "float-heart";
-    h.innerHTML = ["💗","🩷","🩵"][Math.floor(Math.random()*3)];
-    h.style.left = Math.random()*100 + "vw";
-    h.style.top = "50%";
-
+/* 🎉 احتفال */
+function burst(){
+  for(let i=0;i<12;i++){
+    let h=document.createElement("div");
+    h.className="float-heart";
+    h.innerHTML="💗";
+    h.style.left=Math.random()*100+"vw";
     document.body.appendChild(h);
-
-    setTimeout(()=>h.remove(),3000);
+    setTimeout(()=>h.remove(),2000);
   }
 }
 
-/* -------- HEART GAME -------- */
+/* ❤️ heart game */
 let score=0;
 let target=6;
 
@@ -264,29 +243,40 @@ document.getElementById("score").style.display="block";
 let game=document.getElementById("game");
 let scoreText=document.getElementById("score");
 
-function createHeart(){
-  let heart=document.createElement("div");
-  heart.className="heart";
-  heart.innerHTML=["🩷","🩵"][Math.floor(Math.random()*2)];
+for(let i=0;i<target;i++){
 
-  heart.onclick=function(){
-    score++;
-    scoreText.innerText=score+" / "+target;
-    heart.remove();
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="🩷";
 
-    if(score===target){
-      showMessage();
-    }
-  };
+h.onclick=function(){
 
-  game.appendChild(heart);
+score++;
+scoreText.innerText=score+" / "+target;
+
+/* 💗 تطاير عند الضغط */
+let fly=document.createElement("div");
+fly.className="float-heart";
+fly.innerHTML="🩷";
+fly.style.left=Math.random()*100+"vw";
+document.body.appendChild(fly);
+setTimeout(()=>fly.remove(),2000);
+
+h.remove();
+
+if(score===target){
+  showMessage();
 }
 
-for(let i=0;i<target;i++) createHeart();
+};
+
+game.appendChild(h);
 
 }
 
-/* -------- MESSAGE -------- */
+}
+
+/* 💌 message */
 function showMessage(){
 
 document.getElementById("game").style.display="none";
