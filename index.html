@@ -10,15 +10,13 @@ body{
   text-align:center;
   font-family:'Quicksand',sans-serif;
   background:#ffe6f2;
-
-  /* ✨ مهم: خلي التمرير شغال */
   overflow-y:auto;
   overflow-x:hidden;
 }
 
-/* -------- Math Game -------- */
+/* -------- MATH GAME -------- */
 #mathBox{
-  margin-top:30px;
+  margin-top:40px;
 }
 
 #question{
@@ -51,7 +49,7 @@ body{
   font-weight:600;
 }
 
-/* -------- Hearts Game -------- */
+/* -------- HEART GAME -------- */
 #topText{
   font-size:32px;
   font-weight:700;
@@ -72,7 +70,7 @@ body{
   margin:10px;
 }
 
-/* -------- Message -------- */
+/* -------- MESSAGE -------- */
 #messageBox{
   display:none;
   margin:30px auto;
@@ -84,19 +82,26 @@ body{
 }
 
 #text{
-  font-size:26px;
+  font-size:24px;
   color:#ff1493;
   line-height:1.7;
   white-space:pre-line;
 }
 
+/* -------- IMAGES -------- */
 .win-image{
   width:220px;
   border-radius:15px;
   margin-top:15px;
 }
 
-/* -------- Popup Image -------- */
+.small-image{
+  width:160px;
+  border-radius:15px;
+  margin-top:15px;
+}
+
+/* -------- POPUP IMAGE -------- */
 #imgOverlay{
   display:none;
   position:fixed;
@@ -104,7 +109,7 @@ body{
   left:0;
   width:100%;
   height:100%;
-  background:rgba(255, 230, 242, 0.92);
+  background:rgba(255,230,242,0.92);
   justify-content:center;
   align-items:center;
   z-index:999;
@@ -116,35 +121,22 @@ body{
   border-radius:20px;
 }
 
-/* -------- Floating hearts -------- */
-.float-heart{
-  position:fixed;
-  font-size:22px;
-  animation:floatUp 3s linear forwards;
-}
-
-@keyframes floatUp{
-  from{transform:translateY(0); opacity:1;}
-  to{transform:translateY(-800px); opacity:0;}
-}
-
-/* -------- LILLY TEXT -------- */
+/* -------- FLOATING TEXT -------- */
 @keyframes moveText {
   0% { transform: translateY(20px); opacity: 0; }
-  50% { opacity: 1; }
   100% { transform: translateY(-20px); opacity: 1; }
 }
 
-.floating-text {
-  position: fixed;
-  bottom: 20%;
-  width: 100%;
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: #ff1493;
+.floating-text{
+  position:fixed;
+  bottom:20%;
+  width:100%;
+  text-align:center;
+  font-size:26px;
+  font-weight:700;
+  color:#ff1493;
   animation: moveText 1.5s infinite alternate;
-  z-index: 1000;
+  z-index:1000;
 }
 
 </style>
@@ -152,31 +144,39 @@ body{
 
 <body>
 
-<!-- 🔊 Sounds -->
-<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
-<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-
-<!-- 🧠 Math Game -->
+<!-- 🧠 MATH GAME -->
 <div id="mathBox">
   <div id="question"></div>
-  <input id="answer" type="number" placeholder="Your answer">
+  <input id="answer" type="number" placeholder="answer">
   <br>
   <button id="checkBtn">Check</button>
   <div id="msg"></div>
 </div>
 
-<!-- ❤️ Hearts Game -->
+<!-- ❤️ HEART GAME -->
 <div id="topText">PRESS TO WIN</div>
 <p id="score">0 / 6</p>
 <div id="game"></div>
 
-<!-- 💌 Message -->
+<!-- 💌 MESSAGE -->
 <div id="messageBox">
-  <div id="text"></div>
+
+  <div id="text">
+🩷🩷 GREAT JOB MY SWEETIE BOY
+I LOVE YOU 25,0000000000000♾️!
+
+I'm proud of you, even for the small things
+
+You mean more to me than anything.
+  </div>
+
   <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
+
+  <img src="https://i.imgur.com/cqiXrWK.jpg" class="small-image">
+
 </div>
 
-<!-- 🖼️ Popup Image -->
+<!-- 🖼️ POPUP IMAGE -->
 <div id="imgOverlay">
   <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
 </div>
@@ -191,89 +191,53 @@ let questions = [
   {q:"7 + 10 - 3 + 16 - 5 = ?", a:25}
 ];
 
-function loadQ(){
-  document.getElementById("question").innerText = questions[step].q;
-  document.getElementById("answer").value = "";
-  document.getElementById("msg").innerText = "";
-}
-
-loadQ();
+document.getElementById("question").innerText = questions[0].q;
 
 document.getElementById("checkBtn").onclick = function(){
-  let val = Number(document.getElementById("answer").value);
 
-  if(val === questions[step].a){
-    document.getElementById("correctSound").play();
-    document.getElementById("msg").innerText = "✔️ Correct!";
-    burstHearts();
+let val = Number(document.getElementById("answer").value);
 
-    step++;
+if(val === questions[step].a){
+  step++;
+  document.getElementById("msg").innerText = "✔️ correct";
 
-    setTimeout(()=>{
-      if(step < questions.length){
-        loadQ();
-      } else {
-        document.getElementById("mathBox").style.display = "none";
-        startHearts();
-      }
-    }, 800);
-
+  if(step < questions.length){
+    document.getElementById("question").innerText = questions[step].q;
+    document.getElementById("answer").value = "";
   } else {
-    document.getElementById("wrongSound").play();
-    document.getElementById("msg").innerText = "❌ Try again";
+    startHearts();
+    document.getElementById("mathBox").style.display="none";
   }
-};
 
-/* 💥 hearts burst */
-function burstHearts(){
-  for(let i=0;i<12;i++){
-    let h = document.createElement("div");
-    h.innerHTML = "💗";
-    h.style.position = "fixed";
-    h.style.left = Math.random()*100 + "vw";
-    h.style.top = "50%";
-    h.style.fontSize = "22px";
-    h.style.animation = "floatUp 1.5s ease forwards";
-
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1500);
-  }
+} else {
+  document.getElementById("msg").innerText = "❌ try again";
 }
 
-/* -------- HEART GAME -------- */
+};
 
-let score = 0;
-let target = 6;
+/* -------- HEART GAME -------- */
+let score=0;
+let target=6;
 
 function startHearts(){
 
 document.getElementById("topText").style.display="block";
 document.getElementById("score").style.display="block";
 
-let game = document.getElementById("game");
-let scoreText = document.getElementById("score");
+let game=document.getElementById("game");
+let scoreText=document.getElementById("score");
 
 function createHeart(){
-  let heart = document.createElement("div");
-  heart.className = "heart";
+  let heart=document.createElement("div");
+  heart.className="heart";
+  heart.innerHTML=["🩷","🩵"][Math.floor(Math.random()*2)];
 
-  let arr = ["🩷","🩵"];
-  heart.innerHTML = arr[Math.floor(Math.random()*arr.length)];
-
-  heart.onclick = function(){
+  heart.onclick=function(){
     score++;
-    scoreText.innerText = score + " / " + target;
+    scoreText.innerText=score+" / "+target;
     heart.remove();
 
-    let float = document.createElement("div");
-    float.className = "float-heart";
-    float.innerHTML = heart.innerHTML;
-    float.style.left = Math.random()*100 + "vw";
-    document.body.appendChild(float);
-
-    setTimeout(()=>float.remove(),3000);
-
-    if(score === target){
+    if(score===target){
       showMessage();
     }
   };
@@ -281,14 +245,11 @@ function createHeart(){
   game.appendChild(heart);
 }
 
-for(let i=0;i<target;i++){
-  createHeart();
-}
+for(let i=0;i<target;i++) createHeart();
 
 }
 
 /* -------- MESSAGE -------- */
-
 function showMessage(){
 
 document.getElementById("game").style.display="none";
@@ -297,20 +258,17 @@ document.getElementById("score").style.display="none";
 
 document.getElementById("messageBox").style.display="block";
 
-let box = document.getElementById("text");
-
-box.innerText = "🩷🩷 GREAT JOB MY SWEETIE BOY\nI LOVE YOU 25,0000000000000♾️!\n\nI'm proud of you even for the small things\n\nYou mean more to me than anything";
-
 setTimeout(()=>{
-  document.getElementById("imgOverlay").style.display = "flex";
 
-  let txt = document.createElement("div");
-  txt.className = "floating-text";
-  txt.innerText = "LILLYYYYYY LOVESSSSSSS BADDOORRRRRRRRR";
+  document.getElementById("imgOverlay").style.display="flex";
+
+  let txt=document.createElement("div");
+  txt.className="floating-text";
+  txt.innerText="LILLYYYYYY LOVESSSSSSS BADDOORRRRRRRRR";
 
   document.body.appendChild(txt);
 
-}, 4000);
+},4000);
 
 }
 
