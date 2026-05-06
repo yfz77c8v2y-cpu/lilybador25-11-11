@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  text-align:center;
+  font-family:'Quicksand',sans-serif;
+  background:#ffe6f2;
+  overflow:hidden;
+}
+
+/* -------- Math Game -------- */
+#mathBox{
+  margin-top:30px;
+}
+
+#question{
+  font-size:28px;
+  font-weight:700;
+  color:#ff1493;
+}
+
+#answer{
+  padding:10px;
+  font-size:18px;
+  border-radius:10px;
+  border:1px solid #ff4da6;
+  margin-top:10px;
+}
+
+#checkBtn{
+  margin-top:10px;
+  padding:10px 18px;
+  border:none;
+  border-radius:15px;
+  background:#ff4da6;
+  color:white;
+  cursor:pointer;
+}
+
+#msg{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:600;
+}
+
+/* -------- Hearts Game -------- */
+#topText{
+  font-size:32px;
+  font-weight:700;
+  color:#ff1493;
+  margin-top:20px;
+  display:none;
+}
+
+#score{
+  font-size:18px;
+  display:none;
+}
+
+.heart{
+  font-size:42px;
+  cursor:pointer;
+  display:inline-block;
+  margin:10px;
+}
+
+/* -------- Message -------- */
+#messageBox{
+  display:none;
+  margin:30px auto;
+  padding:20px;
+  width:85%;
+  max-width:320px;
+  background:white;
+  border-radius:20px;
+}
+
+#text{
+  font-size:26px;
+  color:#ff1493;
+  line-height:1.7;
+  white-space:pre-line;
+}
+
+/* الصورة الأولى */
+.win-image{
+  width:220px;
+  border-radius:15px;
+  margin-top:15px;
+}
+
+/* -------- Popup image -------- */
+#imgOverlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(255, 230, 242, 0.92);
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+}
+
+.popup-img{
+  width:70%;
+  max-width:300px;
+  border-radius:20px;
+  animation: dropIn 0.5s ease;
+}
+
+@keyframes dropIn{
+  from{
+    transform: translateY(-40px) scale(0.9);
+    opacity:0;
+  }
+  to{
+    transform: translateY(0) scale(1);
+    opacity:1;
+  }
+}
+
+/* -------- floating hearts -------- */
+.float-heart{
+  position:fixed;
+  font-size:22px;
+  animation:floatUp 3s linear forwards;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0); opacity:1;}
+  to{transform:translateY(-800px); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔊 Sounds -->
+<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
+<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+<!-- 🧠 Math Game -->
+<div id="mathBox">
+  <div id="question"></div>
+  <input id="answer" type="number" placeholder="Your answer">
+  <br>
+  <button id="checkBtn">Check</button>
+  <div id="msg"></div>
+</div>
+
+<!-- ❤️ Hearts Game -->
+<div id="topText">PRESS TO WIN</div>
+<p id="score">0 / 6</p>
+<div id="game"></div>
+
+<!-- 💌 Message -->
+<div id="messageBox">
+  <div id="text"></div>
+  <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
+</div>
+
+<!-- 🖼️ Popup Image -->
+<div id="imgOverlay">
+  <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
+</div>
+
+<script>
+
+/* -------- MATH GAME -------- */
+let step = 0;
+
+let questions = [
+  {q:"2 + 5 = ?", a:7},
+  {q:"7 + 10 - 3 + 16 - 5 = ?", a:25}
+];
+
+function loadQ(){
+  document.getElementById("question").innerText = questions[step].q;
+  document.getElementById("answer").value = "";
+  document.getElementById("msg").innerText = "";
+}
+
+loadQ();
+
+document.getElementById("checkBtn").onclick = function(){
+  let val = Number(document.getElementById("answer").value);
+
+  if(val === questions[step].a){
+    document.getElementById("correctSound").play();
+    document.getElementById("msg").innerText = "✔️ Correct!";
+    burstHearts();
+
+    step++;
+
+    setTimeout(()=>{
+      if(step < questions.length){
+        loadQ();
+      } else {
+        document.getElementById("mathBox").style.display = "none";
+        startHearts();
+      }
+    }, 800);
+
+  } else {
+    document.getElementById("wrongSound").play();
+    document.getElementById("msg").innerText = "❌ Try again";
+  }
+};
+
+/* 💥 burst hearts */
+function burstHearts(){
+  for(let i=0;i<12;i++){
+    let h = document.createElement("div");
+    h.innerHTML = "💗";
+    h.style.position = "fixed";
+    h.style.left = Math.random()*100 + "vw";
+    h.style.top = "50%";
+    h.style.fontSize = "22px";
+    h.style.animation = "floatUp 1.5s ease forwards";
+
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1500);
+  }
+}
+
+/* -------- HEART GAME -------- */
+
+let score = 0;
+let target = 6;
+
+function startHearts(){
+
+document.getElementById("topText").style.display="block";
+document.getElementById("score").style.display="block";
+
+let game = document.getElementById("game");
+let scoreText = document.getElementById("score");
+
+function createHeart(){
+  let heart = document.createElement("div");
+  heart.className = "heart";
+
+  let arr = ["🩷","🩵"];
+  heart.innerHTML = arr[Math.floor(Math.random()*arr.length)];
+
+  heart.onclick = function(){
+    score++;
+    scoreText.innerText = score + " / " + target;
+    heart.remove();
+
+    let float = document.createElement("div");
+    float.className = "float-heart";
+    float.innerHTML = heart.innerHTML;
+    float.style.left = Math.random()*100 + "vw";
+    document.body.appendChild(float);
+
+    setTimeout(()=>float.remove(),3000);
+
+    if(score === target){
+      showMessage();
+    }
+  };
+
+  game.appendChild(heart);
+}
+
+for(let i=0;i<target;i++){
+  createHeart();
+}
+
+}
+
+/* -------- MESSAGE -------- */
+
+function showMessage(){
+
+document.getElementById("game").style.display="none";
+document.getElementById("topText").style.display="none";
+document.getElementById("score").style.display="none";
+
+document.getElementById("messageBox").style.display="block";
+
+let line1 = "🩷🩷 GREAT JOB MY SWEETIE BOY";
+let rest = `I LOVE YOU 25,0000000000000♾️!
+
+I'm proud of you, even for the small things
+
+You mean more to me than anything.`;
+
+let box = document.getElementById("text");
+box.innerHTML = line1;
+
+setTimeout(()=>{
+  box.innerHTML = line1 + "\n\n" + rest;
+
+  // 🖼️ الصورة الثانية بعد 4 ثواني
+  setTimeout(()=>{
+    document.getElementById("imgOverlay").style.display = "flex";
+  }, 4000);
+
+}, 700);
+
+}
+
+</script>
+
+</body>
+</html>
