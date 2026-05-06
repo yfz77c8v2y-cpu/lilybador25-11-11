@@ -10,7 +10,10 @@ body{
   text-align:center;
   font-family:'Quicksand',sans-serif;
   background:#ffe6f2;
-  overflow:hidden;
+
+  /* ✨ مهم: خلي التمرير شغال */
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 
 /* -------- Math Game -------- */
@@ -87,14 +90,13 @@ body{
   white-space:pre-line;
 }
 
-/* الصورة الأولى */
 .win-image{
   width:220px;
   border-radius:15px;
   margin-top:15px;
 }
 
-/* -------- Popup image -------- */
+/* -------- Popup Image -------- */
 #imgOverlay{
   display:none;
   position:fixed;
@@ -112,21 +114,9 @@ body{
   width:70%;
   max-width:300px;
   border-radius:20px;
-  animation: dropIn 0.5s ease;
 }
 
-@keyframes dropIn{
-  from{
-    transform: translateY(-40px) scale(0.9);
-    opacity:0;
-  }
-  to{
-    transform: translateY(0) scale(1);
-    opacity:1;
-  }
-}
-
-/* -------- floating hearts -------- */
+/* -------- Floating hearts -------- */
 .float-heart{
   position:fixed;
   font-size:22px;
@@ -137,6 +127,26 @@ body{
   from{transform:translateY(0); opacity:1;}
   to{transform:translateY(-800px); opacity:0;}
 }
+
+/* -------- LILLY TEXT -------- */
+@keyframes moveText {
+  0% { transform: translateY(20px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 1; }
+}
+
+.floating-text {
+  position: fixed;
+  bottom: 20%;
+  width: 100%;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff1493;
+  animation: moveText 1.5s infinite alternate;
+  z-index: 1000;
+}
+
 </style>
 </head>
 
@@ -214,7 +224,7 @@ document.getElementById("checkBtn").onclick = function(){
   }
 };
 
-/* 💥 burst hearts */
+/* 💥 hearts burst */
 function burstHearts(){
   for(let i=0;i<12;i++){
     let h = document.createElement("div");
@@ -287,25 +297,20 @@ document.getElementById("score").style.display="none";
 
 document.getElementById("messageBox").style.display="block";
 
-let line1 = "🩷🩷 GREAT JOB MY SWEETIE BOY";
-let rest = `I LOVE YOU 25,0000000000000♾️!
-
-I'm proud of you, even for the small things
-
-You mean more to me than anything.`;
-
 let box = document.getElementById("text");
-box.innerHTML = line1;
+
+box.innerText = "🩷🩷 GREAT JOB MY SWEETIE BOY\nI LOVE YOU 25,0000000000000♾️!\n\nI'm proud of you, even for the small things\n\nYou mean more to me than anything.";
 
 setTimeout(()=>{
-  box.innerHTML = line1 + "\n\n" + rest;
+  document.getElementById("imgOverlay").style.display = "flex";
 
-  // 🖼️ الصورة الثانية بعد 4 ثواني
-  setTimeout(()=>{
-    document.getElementById("imgOverlay").style.display = "flex";
-  }, 4000);
+  let txt = document.createElement("div");
+  txt.className = "floating-text";
+  txt.innerText = "LILLYYYYYY LOVESSSSSSS BADDOORRRRRRRRR";
 
-}, 700);
+  document.body.appendChild(txt);
+
+}, 4000);
 
 }
 
