@@ -89,7 +89,7 @@ body{
   margin-top:15px;
 }
 
-/* -------- Overlay (NEW END SCREEN) -------- */
+/* -------- Overlay -------- */
 #endOverlay{
   display:none;
   position:fixed;
@@ -110,15 +110,8 @@ body{
   gap:15px;
 }
 
-.end-img1{
-  width:220px;
-  border-radius:15px;
-}
-
-.end-img2{
-  width:160px;
-  border-radius:15px;
-}
+.end-img1{ width:220px; border-radius:15px; }
+.end-img2{ width:160px; border-radius:15px; }
 
 .floating-text{
   font-size:28px;
@@ -133,7 +126,7 @@ body{
   100%{transform:translateY(-15px);opacity:1;}
 }
 
-/* -------- Floating hearts -------- */
+/* -------- Hearts -------- */
 .float-heart{
   position:fixed;
   font-size:22px;
@@ -144,6 +137,30 @@ body{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-800px);opacity:0;}
 }
+
+/* -------- Confetti -------- */
+.confetti{
+  position:fixed;
+  font-size:18px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(800px);opacity:0;}
+}
+
+/* pop animation */
+.pop-message{
+  animation: popIn 0.5s ease-out;
+}
+
+@keyframes popIn{
+  0%{transform:scale(0.7);opacity:0;}
+  60%{transform:scale(1.05);opacity:1;}
+  100%{transform:scale(1);}
+}
+
 </style>
 </head>
 
@@ -169,7 +186,6 @@ body{
   <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
 </div>
 
-<!-- 🔥 END OVERLAY -->
 <div id="endOverlay">
   <div class="end-content">
     <img src="https://i.imgur.com/ScJQhwO.jpg" class="end-img1">
@@ -231,7 +247,7 @@ function burstHearts(){
     h.style.position="fixed";
     h.style.left=Math.random()*100+"vw";
     h.style.top="50%";
-    h.style.animation="floatUp 2.5s ease forwards";
+    h.style.animation="floatUp 4.5s ease forwards";
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),2500);
   }
@@ -281,7 +297,7 @@ for(let i=0;i<target;i++) createHeart();
 
 }
 
-/* -------- FINAL -------- */
+/* -------- FINAL MESSAGE -------- */
 
 function showMessage(){
 
@@ -293,13 +309,30 @@ document.getElementById("messageBox").style.display="block";
 
 let box=document.getElementById("text");
 
-box.innerText=" GREAT JOB MY SWEETIE BOY\nI LOVE YOU 😽💕25,0000000000000♾️!\n\nI'm proud of you even for the small things\n\nYou mean more to me than anything ";
+box.classList.add("pop-message");
 
+box.innerText =
+`GREAT JOB MY SWEETIE BOY
+I LOVE YOU 😽💕💕 25,0000000000000♾️!
+
+I'm proud of you even for the small things
+
+You mean more to me than anything`;
+
+/* confetti */
+for(let i=0;i<40;i++){
+  let c=document.createElement("div");
+  c.className="confetti";
+  c.innerHTML=Math.random()>0.5?"🩷":"🩵";
+  c.style.left=Math.random()*100+"vw";
+  document.body.appendChild(c);
+  setTimeout(()=>c.remove(),3000);
+}
+
+/*  التعديل : 5 ثواني */
 setTimeout(()=>{
-
-document.getElementById("endOverlay").style.display="flex";
-
-},3500);
+  document.getElementById("endOverlay").style.display="flex";
+},3000);
 
 }
 
