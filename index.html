@@ -14,7 +14,7 @@ body{
   overflow-x:hidden;
 }
 
-/* -------- Math Game -------- */
+/* -------- Math -------- */
 #mathBox{ margin-top:30px; }
 
 #question{
@@ -27,8 +27,6 @@ body{
   padding:10px;
   font-size:18px;
   border-radius:10px;
-  border:1px solid #ff4da6;
-  margin-top:10px;
 }
 
 #checkBtn{
@@ -38,13 +36,6 @@ body{
   border-radius:15px;
   background:#ff4da6;
   color:white;
-  cursor:pointer;
-}
-
-#msg{
-  margin-top:10px;
-  font-size:18px;
-  font-weight:600;
 }
 
 /* -------- Hearts -------- */
@@ -52,7 +43,6 @@ body{
   font-size:32px;
   font-weight:700;
   color:#ff1493;
-  margin-top:20px;
   display:none;
 }
 
@@ -64,7 +54,7 @@ body{
   margin:10px;
 }
 
-/* -------- Message -------- */
+/* -------- MESSAGE -------- */
 #messageBox{
   display:none;
   margin:30px auto;
@@ -76,31 +66,25 @@ body{
 }
 
 #text{
-  font-size:26px;
+  font-size:24px;
   color:#ff1493;
   line-height:1.7;
-  white-space:pre-line;
 }
 
-.win-image{
-  width:220px;
-  border-radius:15px;
-  margin-top:15px;
-}
-
-/* -------- Popup -------- */
+/* -------- POPUP -------- */
 #imgOverlay{
   display:none;
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   background:rgba(255,230,242,0.92);
   justify-content:center;
   align-items:center;
-  flex-direction:column;
   z-index:999;
+}
+
+.popup-content{
+  text-align:center;
+  animation:fadeIn 1.5s ease;
 }
 
 .popup-img{
@@ -109,50 +93,35 @@ body{
   border-radius:20px;
 }
 
-/* 📸 الصورة الثالثة */
 .popup-small{
-  width:160px;
+  width:140px;
+  margin-top:10px;
   border-radius:15px;
-  margin-top:15px;
   opacity:0;
   animation:fadeIn 2s forwards;
 }
 
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
-/* -------- Floating text -------- */
-.floating-text{
-  position:fixed;
-  bottom:20%;
-  width:100%;
-  text-align:center;
-  font-size:28px;
+/* الكلام تحت الصور */
+.popup-text{
+  margin-top:15px;
+  font-size:22px;
   font-weight:700;
   color:#ff1493;
-  animation:moveText 1.5s infinite alternate;
 }
 
-@keyframes moveText{
-  0%{transform:translateY(20px); opacity:0;}
-  100%{transform:translateY(-20px); opacity:1;}
-}
-
-/* 💥 hearts float */
+/* -------- HORIZONTAL HEARTS -------- */
 .float-heart{
   position:fixed;
   font-size:22px;
-  animation:floatUp 2s linear forwards;
+  animation:moveSide 2s linear forwards;
 }
 
-@keyframes floatUp{
-  from{transform:translateY(0); opacity:1;}
-  to{transform:translateY(-700px); opacity:0;}
+@keyframes moveSide{
+  0%{transform:translateX(0); opacity:1;}
+  100%{transform:translateX(120vw); opacity:0;}
 }
 
-/* 💥 CONFETTI */
+/* -------- CONFETTI -------- */
 .confetti{
   position:fixed;
   width:10px;
@@ -167,6 +136,11 @@ body{
   100%{transform:translateY(100vh) rotate(360deg); opacity:0;}
 }
 
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
 </style>
 </head>
 
@@ -176,9 +150,7 @@ body{
 <div id="mathBox">
   <div id="question"></div>
   <input id="answer" type="number">
-  <br>
   <button id="checkBtn">Check</button>
-  <div id="msg"></div>
 </div>
 
 <!-- ❤️ Hearts -->
@@ -186,16 +158,25 @@ body{
 <p id="score">0 / 6</p>
 <div id="game"></div>
 
-<!-- 💌 Message -->
+<!-- 💌 MESSAGE -->
 <div id="messageBox">
   <div id="text"></div>
-  <img src="https://i.imgur.com/eOEcQSV.jpeg" class="win-image">
+  <img src="https://i.imgur.com/eOEcQSV.jpeg" width="200">
 </div>
 
-<!-- 🖼️ Popup -->
+<!-- 🖼️ POPUP -->
 <div id="imgOverlay">
-  <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
-  <img src="https://i.imgur.com/cqiXrWK.jpg" class="popup-small">
+  <div class="popup-content">
+
+    <img src="https://i.imgur.com/ScJQhwO.jpg" class="popup-img">
+
+    <img src="https://i.imgur.com/cqiXrWK.jpg" class="popup-small">
+
+    <div class="popup-text">
+      LILLYYYYYY LOVESSSSSSS BADDOORRRRRRRRR
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -203,30 +184,30 @@ body{
 /* -------- Math -------- */
 let step=0;
 
-let questions=[
-  {q:"2 + 5 = ?", a:7},
-  {q:"7 + 10 - 3 + 16 - 5 = ?", a:25}
+let q=[
+ {q:"2 + 5 = ?", a:7},
+ {q:"7 + 10 - 3 + 16 - 5 = ?", a:25}
 ];
 
-document.getElementById("question").innerText=questions[0].q;
+document.getElementById("question").innerText=q[0].q;
 
 document.getElementById("checkBtn").onclick=function(){
 
 let val=Number(document.getElementById("answer").value);
 
-if(val===questions[step].a){
+if(val===q[step].a){
 
 step++;
 burst();
 
-if(step<questions.length){
-document.getElementById("question").innerText=questions[step].q;
+if(step<q.length){
+document.getElementById("question").innerText=q[step].q;
 document.getElementById("answer").value="";
 }
 else{
 startHearts();
 document.getElementById("mathBox").style.display="none";
-confettiBurst(); // 💥 نهاية
+finalConfetti();
 }
 
 }
@@ -234,17 +215,17 @@ confettiBurst(); // 💥 نهاية
 
 /* 💥 burst */
 function burst(){
-for(let i=0;i<10;i++){
+for(let i=0;i<8;i++){
 let h=document.createElement("div");
 h.className="float-heart";
 h.innerHTML=["🩵","🩷"][Math.floor(Math.random()*2)];
-h.style.left=Math.random()*100+"vw";
+h.style.top=Math.random()*100+"vh";
 document.body.appendChild(h);
 setTimeout(()=>h.remove(),2000);
 }
 }
 
-/* ❤️ hearts */
+/* ❤️ hearts horizontal */
 let score=0;
 let target=6;
 
@@ -267,10 +248,11 @@ h.onclick=function(){
 score++;
 scoreText.innerText=score+" / "+target;
 
+/* horizontal move */
 let fly=document.createElement("div");
 fly.className="float-heart";
 fly.innerHTML=h.innerHTML;
-fly.style.left=Math.random()*100+"vw";
+fly.style.top=Math.random()*100+"vh";
 document.body.appendChild(fly);
 setTimeout(()=>fly.remove(),2000);
 
@@ -295,32 +277,27 @@ document.getElementById("score").style.display="none";
 document.getElementById("messageBox").style.display="block";
 
 document.getElementById("text").innerText=
-`GREAT JOB MY SWEETIE BOY😽💕💕
+`🩷🩷 GREAT JOB MY SWEETIE BOY
 I LOVE YOU 25,0000000000000♾️!
 
-I'm proud of you even for the small things
-You mean more to me than anything`;
+I'm proud of you
+You mean everything`;
 
 setTimeout(()=>{
 
 document.getElementById("imgOverlay").style.display="flex";
 
-let txt=document.createElement("div");
-txt.className="floating-text";
-txt.innerText="LILLYYYYYY LOVESSSSSSS BADDOORRRRRRRRR";
-document.body.appendChild(txt);
-
-/* 💥 confetti final */
-confettiBurst();
+finalConfetti();
 
 },4000);
+
 }
 
-/* 💥 confetti */
-function confettiBurst(){
+/* 🎉 FINAL CONFETTI */
+function finalConfetti(){
 let colors=["#ff69b4","#9ad7ff"];
 
-for(let i=0;i<80;i++){
+for(let i=0;i<90;i++){
 let c=document.createElement("div");
 c.className="confetti";
 c.style.left=Math.random()*100+"vw";
